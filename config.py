@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     db_host: str = os.getenv('DB_HOST')
     db_port: str = os.getenv('DB_PORT')
 
-    pg_dsn: PostgresDsn = f'postgres+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    pg_dsn: str = f'postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 
 
 settings = Settings()

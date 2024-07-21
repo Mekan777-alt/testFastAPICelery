@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from db.base import Base
+from db.session import engine
+
 
 async def on_startup():
     pass

@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+  redis:
+    image: redis
+    networks:
+      - mynetwork
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - redis
+      - db
+    networks:
+      - mynetwork
+    command: >
+      sh -c "alembic upgrade head && uvicorn app:app --host 0.0.0.0 --port 8000"
+  celery:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command:
+      - celery -A celery_worker.celery worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mynetwork
+    environment:
+      - CELERY_BROKER_URL=redis//redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  postgres_data
