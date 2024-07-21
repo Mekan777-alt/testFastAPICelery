@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 
@@ -11,24 +11,18 @@ class TokenData(BaseModel):
     email: Optional[str] = None
 
 
-class UserBase(BaseModel):
-    email: str
-
-
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str
-    first_name: str
-    last_name: str
 
 
-class UserInDB(UserBase):
+class UserInDB(BaseModel):
     hashed_password: str
 
 
-class User(UserBase):
+class User(BaseModel):
     id: int
-    first_name: str
-    last_name: str
+    email: EmailStr
 
     class Config:
-        orm_mode = True
+        from_attributes = True
