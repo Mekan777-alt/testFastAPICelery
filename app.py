@@ -1,12 +1,10 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-
-from db.base import Base
-from db.session import engine
+from books.controllers import router as books_router
 
 
 async def on_startup():
-    pass
+    app.include_router(books_router, prefix="/api/v1", tags=["Books"])
 
 
 app = FastAPI(

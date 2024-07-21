@@ -5,9 +5,11 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from config import settings
+from core.config import settings
 from db.base import Base
-from users.models import User
+
+from auth.models import Auth
+from authors.models import Authors
 from books.models import Book, BookGenreAssociation
 from genres.models import Genre
 

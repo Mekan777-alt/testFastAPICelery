@@ -1,7 +1,6 @@
 from sqlalchemy.orm import relationship
-
 from db.base import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
 
 
 class Genre(Base):

@@ -1,5 +1,4 @@
 import os
-from pydantic import PostgresDsn
 
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
@@ -15,6 +14,10 @@ class Settings(BaseSettings):
     db_port: str = os.getenv('DB_PORT')
 
     pg_dsn: str = f'postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+
+    jwt_secret_key: str = os.getenv('JWT_SECRET_KEY')
+    algorithm: str = "HS256"
+    access_token_expires: int = 30
 
 
 settings = Settings()
