@@ -61,7 +61,7 @@ async def get_booking_by_id(booking_id: int, current_user: Annotated[Auth, Depen
     return booking
 
 
-@router.post('/booking/{booking_id}/return', summary="Сдать книгу", status_code=status.HTTP_200_OK,
+@router.post('/bookings/{booking_id}/return', summary="Сдать книгу", status_code=status.HTTP_200_OK,
              response_model=BookingResponse)
 async def update_booking_to_user(booking_id: int, current_user: Annotated[Auth, Depends(get_current_user)],
                                  session: AsyncSession = Depends(get_session)):
@@ -76,4 +76,20 @@ async def update_booking_to_user(booking_id: int, current_user: Annotated[Auth, 
     return updated_booking
 
 
+@router.post('/bookings/{booking_id}/cancel', summary="Отменить бронирование", status_code=status.HTTP_200_OK,
+             response_model=BookingResponse)
+async def cancel_booking(booking_id: int, current_user: Annotated[Auth, Depends(get_current_user)],
+                         session: AsyncSession = Depends(get_session)):
+    """
+
+    :param booking_id: Принимает INT значение определенной брони\n
+    :param current_user: Передавать access_token для идентификации пользователя переданный при авторизации\n
+    :return: Возвращает отмененное бронирование
+    """
+
+    service = BookingService(session)
+
+    booking = await service.cancel_booking(booking_id)
+
+    return booking
 

@@ -45,13 +45,8 @@ async def create_book(book: BooksSchema, session: AsyncSession = Depends(get_ses
     """
 
     books_service = BooksService(session)
-    books_association_service = BookAssociationService(session)
 
     created_book = await books_service.create_book(book)
-
-    if created_book:
-        await books_association_service.create_book_association(
-            book_id=created_book.id, genre_id=book.genre_id)
 
     return created_book
 

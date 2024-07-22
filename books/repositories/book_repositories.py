@@ -4,9 +4,6 @@ from sqlalchemy.orm import selectinload
 from books.models import Book, BookGenreAssociation
 from sqlalchemy.future import select
 
-from books.schemas import BookResponseSchema
-from genres.schemas import GenreResponseSchema
-
 
 class BookRepository:
 
@@ -18,20 +15,7 @@ class BookRepository:
             select(Book).options(selectinload(Book.books_assoc).selectinload(BookGenreAssociation.genre))
         )
         books = result.scalars().all()
-        book_responses = []
-        for book in books:
-            genres = [assoc.genre for assoc in book.books_assoc]
-            genre_schemas = [GenreResponseSchema(id=genre.id, name=genre.name) for genre in genres]
-            book_response = BookResponseSchema(
-                id=book.id,
-                title=book.title,
-                price=book.price,
-                pages=book.pages,
-                author_id=book.author_id,
-                genres=genre_schemas
-            )
-            book_responses.append(book_response)
-        return book_responses
+        return books
 
     async def get_book(self, book_id):
         result = await self.db.execute(

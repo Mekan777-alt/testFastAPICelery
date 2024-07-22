@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import List
 
 from fastapi import HTTPException
@@ -16,16 +17,19 @@ class BookingService:
         self.booking_repository = BookingRepository(db)
 
     async def create_booking(self, booking: BookingCreate, user_id: int, book_id: int):
-
-        conflict_booking = await self.db.execute(
-            select(Booking).where(
-                Booking.book_id == book_id,
-                Booking.status == BookingStatus.ACTIVE,
-                Booking.start_date <= booking.start_date,
+        if booking.start_datetime < datetime.now():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Дата начала бронирования не может быть задним числом."
             )
+
+        conflicting_bookings = await self.booking_repository.get_conflicting_bookings(
+            book_id=book_id,
+            start_datetime=booking.start_datetime,
+            end_datetime=booking.end_datetime
         )
 
-        if conflict_booking.scalar():
+        if conflicting_bookings:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Книга уже забронирована на указанные даты."
@@ -34,8 +38,9 @@ class BookingService:
         new_booking = Booking(
             book_id=book_id,
             user_id=user_id,
-            start_date=booking.start_date,
-            end_date=booking.end_date,
+            start_datetime=booking.start_datetime,
+            end_datetime=booking.end_datetime,
+            status=BookingStatus.ACTIVE
         )
         return await self.booking_repository.create_booking(new_booking)
 
@@ -43,15 +48,36 @@ class BookingService:
         return await self.booking_repository.get_booking(user_id)
 
     async def get_bookings_id(self, booking_id: int):
-        return await self.booking_repository.get_booking_by_id(booking_id)
+        booking = await self.booking_repository.get_booking_by_id(booking_id)
+
+        if booking is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Booking not found"
+            )
+
+        return booking
 
     async def return_booking(self, booking_id: int):
-        booking = await self.booking_repository.update_booking(booking_id, BookingStatus.RETURNED)
+        booking = await self.booking_repository.update_booking(booking_id, BookingStatus.RETURNED,
+                                                               end_datetime=datetime.now())
 
         if not booking:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Бронирование не найдено"
+            )
+
+        return booking
+
+    async def cancel_booking(self, booking_id: int):
+        booking = await self.booking_repository.update_booking(booking_id, BookingStatus.CANCELLED)
+
+        if not booking:
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Booking not found"
             )
 
         return booking

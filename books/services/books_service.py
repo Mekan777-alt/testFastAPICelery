@@ -91,13 +91,12 @@ class BooksService:
         return self._convert_to_response_schema(existing_book)
 
     def _convert_to_response_schema(self, book: Book) -> BookResponseSchema:
-        genres = [assoc.genre for assoc in book.books_assoc]
-        genre_schemas = [GenreResponseSchema(id=genre.id, name=genre.name) for genre in genres]
+        genres = [GenreResponseSchema(id=assoc.genre.id, name=assoc.genre.name) for assoc in book.books_assoc]
         return BookResponseSchema(
             id=book.id,
             title=book.title,
             price=book.price,
             pages=book.pages,
             author_id=book.author_id,
-            genres=genre_schemas
+            genres=genres
         )
