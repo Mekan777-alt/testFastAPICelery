@@ -4,6 +4,7 @@ from books.controllers import router as books_router
 from auth.controllers import router as auth_router
 from booking.controllers import router as booking_router
 from genres.controllers import router as genres_router
+from authors.controllers import router as authors_router
 
 
 async def on_startup():
@@ -11,6 +12,7 @@ async def on_startup():
     app.include_router(auth_router, prefix="/api/v1", tags=["Auth and Registration"])
     app.include_router(booking_router, prefix="/api/v1", tags=["Booking"])
     app.include_router(genres_router, prefix="/api/v1", tags=["Genres"])
+    app.include_router(authors_router, prefix="/api/v1", tags=["Authors"])
 
 app = FastAPI(
     title="Test FastAPI Celery Project",
