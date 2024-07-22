@@ -1,9 +1,7 @@
-from typing import List
-
 from books.repositories import BookRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from books.schemas import BookSchema
+from books.models import Book, BookGenreAssociation
+from books.schemas import BooksSchema, BookResponseSchema
 
 
 class BooksService:
@@ -17,3 +15,12 @@ class BooksService:
     async def get_book(self, book_id: int):
         result = await self.book_repository.get_book(book_id)
         return result
+
+    async def create_book(self, book: BooksSchema):
+        new_book = Book(
+            title=book.title,
+            price=book.price,
+            pages=book.pages,
+            author_id=book.author_id,
+        )
+        return await self.book_repository.create_book(new_book)

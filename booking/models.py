@@ -12,7 +12,7 @@ class Booking(Base):
     user_id = Column(Integer, ForeignKey('auth.id'))
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
-    status = Column(SQLAlchemyEnum(BookingStatus), default=BookingStatus.ACTIVE)
+    status = Column(SQLAlchemyEnum(BookingStatus), default=BookingStatus.ACTIVE, nullable=False)
 
     users = relationship('Auth', back_populates='booking')
     books = relationship('Book', back_populates='booking')

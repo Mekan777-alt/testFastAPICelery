@@ -12,3 +12,4 @@ class BookingResponse(BaseModel):
     book_id: int
     start_date: date
     end_date: date
+    status: str

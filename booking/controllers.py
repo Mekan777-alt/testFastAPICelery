@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-
 from auth.models import Auth
 from booking.schemas import BookingCreate, BookingResponse
 from booking.services import BookingService
@@ -51,7 +50,7 @@ async def get_booking_by_id(booking_id: int, current_user: Annotated[Auth, Depen
                             session: AsyncSession = Depends(get_session)):
     """
 
-    :param booking_id: Принимает INT значение определенной брони
+    :param booking_id: Принимает INT значение определенной брони\n
     :param current_user: Передавать access_token для идентификации пользователя переданный при авторизации\n
     :return: Возвращает определенную бронь согласно схеме
     """
@@ -62,7 +61,19 @@ async def get_booking_by_id(booking_id: int, current_user: Annotated[Auth, Depen
     return booking
 
 
-# @router.post('/booking{booking_id}/return', summary="Сдать книгу", status_code=status.HTTP_200_OK,
-#              response_model=BookingResponse)
+@router.post('/booking/{booking_id}/return', summary="Сдать книгу", status_code=status.HTTP_200_OK,
+             response_model=BookingResponse)
+async def update_booking_to_user(booking_id: int, current_user: Annotated[Auth, Depends(get_current_user)],
+                                 session: AsyncSession = Depends(get_session)):
+    """
+    :param booking_id: Принимает INT значение определенной брони\n
+    :param current_user: Передавать access_token для идентификации пользователя переданный при авторизации\n
+    :return: Возвращает обновленное бронирование
+    """
+    service = BookingService(session)
+    updated_booking = await service.return_booking(booking_id)
+
+    return updated_booking
+
 
 

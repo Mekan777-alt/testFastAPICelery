@@ -1,3 +1,4 @@
+from booking.enum import BookingStatus
 from booking.models import Booking
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,3 +21,14 @@ class BookingRepository:
     async def get_booking_by_id(self, booking_id: int):
         booking = await self.db.execute(select(Booking).where(Booking.id == booking_id))
         return booking.scalar()
+
+    async def update_booking(self, booking_id: int, status: BookingStatus):
+        booking = await self.db.get(Booking, booking_id)
+
+        if booking:
+            booking.status = status
+
+            await self.db.commit()
+            await self.db.refresh(booking)
+
+        return booking

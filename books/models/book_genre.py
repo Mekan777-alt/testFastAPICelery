@@ -12,5 +12,5 @@ class BookGenreAssociation(Base):
     book_id = Column(Integer, ForeignKey('books.id'), primary_key=True)
     genre_id = Column(Integer, ForeignKey('genres.id'), primary_key=True)
 
-    genre = relationship(Genre, back_populates='books')
-    books = relationship(Book, back_populates='genres')
+    genre = relationship(Genre, back_populates='books_assoc')
+    books = relationship(Book, back_populates='books_assoc')
