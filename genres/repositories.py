@@ -21,8 +21,14 @@ class GenreRepository:
         return genre
 
     async def get_genre(self, genre_id):
-        result = await self.db.execute(select(Genre).where(Genre.id == genre_id))
-        return result.scalar()
+        genre = await self.db.execute(select(Genre).where(Genre.id == genre_id))
+        genre = genre.scalar()
+
+        if genre is None:
+
+            raise HTTPException(status_code=404, detail="Genre not found")
+
+        return genre
 
     async def update_genre(self, genre_id, genre):
         genre_db = await self.db.execute(select(Genre).where(Genre.id == genre_id))

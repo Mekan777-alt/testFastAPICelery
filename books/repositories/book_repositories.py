@@ -39,21 +39,17 @@ class BookRepository:
                 selectinload(Book.books_assoc).selectinload(BookGenreAssociation.genre)
             )
         )
-        book = result.scalar()
-        genres = [assoc.genre for assoc in book.books_assoc]
-        genres_schemas = [GenreResponseSchema(id=genre.id, name=genre.name) for genre in genres]
-        book_response = BookResponseSchema(
-            id=book.id,
-            title=book.title,
-            price=book.price,
-            pages=book.pages,
-            author_id=book.author_id,
-            genres=genres_schemas
-        )
-        return book_response
+        return result.scalar()
 
     async def create_book(self, book):
         self.db.add(book)
         await self.db.commit()
         await self.db.refresh(book)
+
         return book
+
+    async def update_book(self, existing_book):
+        await self.db.commit()
+        await self.db.refresh(existing_book)
+
+        return existing_book

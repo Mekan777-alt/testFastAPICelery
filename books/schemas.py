@@ -1,5 +1,6 @@
 from typing import Optional, List
-from genres.schemas import GenreResponseSchema
+from genres.schemas import GenreResponseSchema, GenreOptionalCreateSchema
+
 from pydantic import BaseModel, Field
 
 
@@ -28,4 +29,4 @@ class BookPartialUpdate(BaseModel):
     price: Optional[float] = Field(None, example=100)
     pages: Optional[int] = Field(None, example=100)
     author_id: Optional[int] = Field(None, example=5)
-    genres: Optional[List[GenreResponseSchema]] = Field(None, example=[])
+    genres: Optional[List[GenreOptionalCreateSchema]] = Field(None, example=[])

@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from genres.schemas import GenreResponseSchema, GenreCreateUpdateSchema
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from starlette import status
 
 from db.session import get_session
@@ -55,10 +55,6 @@ async def get_genre(genre_id: int, session: AsyncSession = Depends(get_session))
     service = GenreService(session)
 
     genre = await service.get_genre(genre_id)
-
-    if genre is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="Genre not found")
 
     return genre
 

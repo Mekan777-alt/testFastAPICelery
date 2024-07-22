@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -13,3 +15,6 @@ class GenreCreateUpdateSchema(BaseModel):
     name: str = Field(..., example="Fiction")
 
 
+class GenreOptionalCreateSchema(BaseModel):
+    id: Optional[int] = Field(..., example=1)
+    name: Optional[str] = Field(..., example="Fiction")
