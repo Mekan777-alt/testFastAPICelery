@@ -15,3 +15,4 @@ class Book(Base):
 
     authors = relationship(Authors, back_populates='books')
     genres = relationship('BookGenreAssociation', back_populates='books')
+    booking = relationship('Booking', back_populates='books')

@@ -12,6 +12,7 @@ from auth.models import Auth
 from authors.models import Authors
 from books.models import Book, BookGenreAssociation
 from genres.models import Genre
+from booking.models import Booking
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

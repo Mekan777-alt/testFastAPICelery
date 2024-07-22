@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from books.controllers import router as books_router
 from auth.controllers import router as auth_router
+from booking.controllers import router as booking_router
 
 
 async def on_startup():
     app.include_router(books_router, prefix="/api/v1", tags=["Books"])
-    app.include_router(auth_router, prefix="/api/v1", tags=["Auth"])
+    app.include_router(auth_router, prefix="/api/v1", tags=["Auth and Registration"])
+    app.include_router(booking_router, prefix="/api/v1", tags=["Booking"])
 
 
 app = FastAPI(

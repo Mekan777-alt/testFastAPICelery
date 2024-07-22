@@ -23,7 +23,7 @@ async def get_all_books(session: AsyncSession = Depends(get_session)):
 
 
 @router.get("/books/{book_id}", summary="Возвращает книгу по ID", status_code=status.HTTP_200_OK,
-            response_model=BookSchema)
+            response_model=List[BookSchema])
 async def get_book_by_id(book_id: int, session: AsyncSession = Depends(get_session)):
     """
     Возвращает книгу по ID\n
@@ -33,8 +33,3 @@ async def get_book_by_id(book_id: int, session: AsyncSession = Depends(get_sessi
     book = await service.get_book(book_id)
 
     return book
-
-
-
-
-
