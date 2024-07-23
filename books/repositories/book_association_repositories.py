@@ -1,5 +1,4 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from books.models import BookGenreAssociation
 
 
 class BookAssociationRepositories:

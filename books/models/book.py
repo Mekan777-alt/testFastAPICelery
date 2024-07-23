@@ -14,5 +14,5 @@ class Book(Base):
     author_id = Column(Integer, ForeignKey('authors.id'), nullable=False)
 
     authors = relationship(Authors, back_populates='books')
-    books_assoc = relationship('BookGenreAssociation', back_populates='books')
+    books_assoc = relationship('BookGenreAssociation', back_populates='books', cascade="all, delete-orphan")
     booking = relationship('Booking', back_populates='books')

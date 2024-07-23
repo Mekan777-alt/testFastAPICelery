@@ -1,11 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, Depends
-from jose import jwt, JWTError
-from datetime import datetime, timedelta
+from fastapi import HTTPException
 from auth.repositories import AuthRepository
-from auth.schemas import TokenData, UserCreate
+from auth.schemas import UserCreate
 from auth.models import Auth
-from core.config import settings
+from starlette import status
 from core.security import verify_password, get_password_hash, create_access_token
 
 
@@ -30,6 +28,13 @@ class AuthService:
         return create_access_token(token_data)
 
     async def create_user(self, user: UserCreate):
+        email = self.auth_repository.get_user_by_email(user.email)
+
+        if email:
+            raise HTTPException(
+                status_code=status.HTTP_200_OK,
+                detail="Email already registered",
+            )
         hashed_password = get_password_hash(user.password)
         db_user = Auth(
             email=user.email,

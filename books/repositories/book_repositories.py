@@ -37,3 +37,7 @@ class BookRepository:
         await self.db.refresh(existing_book)
 
         return existing_book
+
+    async def delete_book(self, book):
+        await self.db.delete(book)
+        await self.db.commit()

@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends
 from starlette import status
 from books.schemas import BookResponseSchema, BooksSchema, BookPartialUpdate
 from books.services.books_service import BooksService
-from books.services.book_association_service import BookAssociationService
 from db.session import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
@@ -85,3 +84,15 @@ async def update_books(book_id: int, book: BookPartialUpdate, session: AsyncSess
     return update_book
 
 
+@router.delete('/books/{book_id}', summary="Удаление книги", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book(book_id: int, session: AsyncSession = Depends(get_session)):
+
+    """
+
+    :param book_id: Принимаеи int значение
+    :return: При успехе возвращает 204 статус NO CONTENT
+    """
+
+    service = BooksService(session)
+
+    await service.delete_book(book_id)

@@ -16,10 +16,6 @@ class UserCreate(BaseModel):
     password: str
 
 
-class UserInDB(BaseModel):
-    hashed_password: str
-
-
 class User(BaseModel):
     id: int
     email: EmailStr

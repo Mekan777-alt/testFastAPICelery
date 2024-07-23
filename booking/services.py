@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from starlette import status
 from booking.repositories import BookingRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
+from books.repositories.book_repositories import BookRepository
 from booking.schemas import BookingCreate
 from booking.models import Booking
 from booking.enum import BookingStatus
@@ -15,8 +15,17 @@ class BookingService:
     def __init__(self, db: AsyncSession):
         self.db = db
         self.booking_repository = BookingRepository(db)
+        self.books_repository = BookRepository(db)
 
     async def create_booking(self, booking: BookingCreate, user_id: int, book_id: int):
+        book = await self.books_repository.get_book(book_id)
+        if not book:
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Book does not exist",
+            )
+
         if booking.start_datetime < datetime.now():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

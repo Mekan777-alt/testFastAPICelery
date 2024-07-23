@@ -29,31 +29,50 @@ services:
     networks:
       - mynetwork
     command: >
-      sh -c "alembic upgrade head && uvicorn app:app --host 0.0.0.0 --port 8000"
+      sh -c "alembic upgrade head && python data.py && uvicorn app:app --host 0.0.0.0 --port 8000"
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
+      - REDIS_URL=redis://redis:6379/0
 
   celery:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: >
-      sh -c "celery -A celery_worker.celery_app worker --loglevel=info"
+    command: celery -A celery_worker.celery worker -B --loglevel=info
     depends_on:
       - db
       - redis
     networks:
       - mynetwork
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
   celery-beat:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: >
-      sh -c "celery -A celery_worker.celery_app beat --loglevel=info"
+    command: celery -A celery_worker.celery beat --loglevel=info
     depends_on:
       - db
       - redis
+      - celery
     networks:
       - mynetwork
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
 
 networks:
   mynetwork:

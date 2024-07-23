@@ -10,6 +10,6 @@ class BookingCreate(BaseModel):
 class BookingResponse(BaseModel):
     id: int
     book_id: int
-    start_date: datetime
-    end_date: datetime
+    start_datetime: datetime
+    end_datetime: datetime
     status: str

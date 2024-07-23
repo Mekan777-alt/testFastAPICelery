@@ -19,5 +19,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expires: int = 30
 
+    redis_host: str = os.getenv('REDIS_HOST')
+    redis_port: int = os.getenv('REDIS_PORT')
+
 
 settings = Settings()

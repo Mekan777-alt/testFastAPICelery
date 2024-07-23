@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, UniqueConstraint, Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from db.base import Base
 from booking.enum import BookingStatus
+from auth.models import Auth
+from books.models.book import Book
 
 
 class Booking(Base):
@@ -14,6 +16,5 @@ class Booking(Base):
     end_datetime = Column(DateTime, nullable=False)
     status = Column(SQLAlchemyEnum(BookingStatus), default=BookingStatus.ACTIVE, nullable=False)
 
-    users = relationship('Auth', back_populates='booking')
-    books = relationship('Book', back_populates='booking')
-
+    users = relationship(Auth, back_populates='booking')
+    books = relationship(Book, back_populates='booking')

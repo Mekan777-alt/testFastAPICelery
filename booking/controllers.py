@@ -92,4 +92,3 @@ async def cancel_booking(booking_id: int, current_user: Annotated[Auth, Depends(
     booking = await service.cancel_booking(booking_id)
 
     return booking
-
