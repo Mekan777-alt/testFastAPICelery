@@ -18,6 +18,7 @@
    DB_USER=ваш_пользователь
    DB_PASSWORD=ваш_пароль
    DB_HOST=db
+   DB_PORT=5432
    DB_NAME=ваша_база_данных
    REDIS_HOST=redis
    REDIS_PORT=6379
