@@ -28,7 +28,7 @@ class AuthService:
         return create_access_token(token_data)
 
     async def create_user(self, user: UserCreate):
-        email = self.auth_repository.get_user_by_email(user.email)
+        email = await self.auth_repository.get_user_by_email(user.email)
 
         if email:
             raise HTTPException(
